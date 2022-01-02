@@ -6,8 +6,6 @@ const SelectCurrency = ({
   showSelectCurrency,
   setShowSelectCurrency,
   tokenList,
-  setTokenList,
-  setSelectedCurrency,
   setConvertToCurrency,
 }) => {
   const [search, setSearch] = useState("");
@@ -59,21 +57,12 @@ const SelectCurrency = ({
                 variant="contained"
                 color={"primary"}
                 onClick={() => {
-                  if (showSelectCurrency == "from")
-                    setSelectedCurrency([
-                      token.name,
-                      token.symbol,
-                      token.address,
-                      token.logoURI,
-                    ]);
-                  else
-                    setConvertToCurrency([
-                      token.name,
-                      token.symbol,
-                      token.address,
-                      token.logoURI,
-                    ]);
-
+                  setConvertToCurrency([
+                    token.symbol,
+                    token.name,
+                    token.price,
+                    token.logoURI,
+                  ]);
                   setShowSelectCurrency(false);
                 }}
               >
