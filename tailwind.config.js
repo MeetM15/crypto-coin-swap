@@ -14,7 +14,10 @@ module.exports = {
         btnRed: "rgb(220 ,38 ,38);",
       },
       width: {
+        76: "19rem",
+        80: "20rem",
         84: "21rem",
+        88: "22rem",
         128: "32rem",
         132: "33rem",
         144: "36rem",

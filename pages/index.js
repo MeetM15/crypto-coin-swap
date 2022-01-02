@@ -11,6 +11,7 @@ import {
   useMoralis,
   useMoralisWeb3Api,
 } from "react-moralis";
+import SelectWallet from "../components/modals/SelectWallet";
 
 const selectList = [
   {
@@ -112,6 +113,7 @@ export default function Home() {
   const [convertToAmount, setConvertToAmount] = useState(0.0);
   const [showSelectCurrency, setShowSelectCurrency] = useState(false);
   const [showWalletModal, setShowWalletModal] = useState(false);
+  const [showSelectWallet, setShowSelectWallet] = useState(false);
 
   const handleSwap = () => {
     console.log({
@@ -130,24 +132,10 @@ export default function Home() {
   }, [swapAmount]);
 
   useEffect(() => {
-    if (selectedCurrency[2] && selectedCurrency[3]) {
-      console.log(selectedCurrency);
-      console.log({
-        chain: selectedCurrency[2],
-        address: selectedCurrency[3],
-      });
-      console.log(
-        "tokens price : ",
-        web3.token.getTokenPrice({
-          chain: selectedCurrency[2],
-          address: selectedCurrency[3],
-          exchange: selectedCurrency[4],
-        })
-      );
+    if (selectedCurrency != "") {
     }
-  }, [swapAmount, selectedCurrency]);
+  }, [selectedCurrency]);
   useEffect(() => {
-    console.log("tokens list : ", tokenList);
     if (tokenList) {
       setConvertToCurrency([
         tokenList[0].symbol,
@@ -158,7 +146,6 @@ export default function Home() {
     }
   }, [tokenList]);
   useEffect(() => {
-    console.log("select tokens list : ", selectTokenList);
     if (selectTokenList) {
       setSelectedCurrency([
         selectTokenList[0].name,
@@ -186,11 +173,14 @@ export default function Home() {
   // }, [selectedCurrency]);
 
   return (
-    <Layout setShowWalletModal={setShowWalletModal}>
+    <Layout
+      setShowWalletModal={setShowWalletModal}
+      setShowSelectWallet={setShowSelectWallet}
+    >
       <Head>
         <title>Crypto Exchange</title>
       </Head>
-      <div className="w-full p-8 flex items-center justify-center">
+      <div className="w-full p-2 flex items-center justify-center">
         <SwapForm
           selectedCurrency={selectedCurrency}
           setSelectedCurrency={setSelectedCurrency}
@@ -202,6 +192,7 @@ export default function Home() {
           convertToAmount={convertToAmount}
           setConvertToAmount={setConvertToAmount}
           handleSwap={handleSwap}
+          setShowSelectWallet={setShowSelectWallet}
         />
       </div>
       <Wallet
@@ -213,6 +204,10 @@ export default function Home() {
         setShowSelectCurrency={setShowSelectCurrency}
         tokenList={tokenList}
         setConvertToCurrency={setConvertToCurrency}
+      />
+      <SelectWallet
+        showSelectWallet={showSelectWallet}
+        setShowSelectWallet={setShowSelectWallet}
       />
     </Layout>
   );

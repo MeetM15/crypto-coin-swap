@@ -27,7 +27,7 @@ const SelectCurrency = ({
       onClose={() => setShowSelectCurrency(false)}
       className="flex items-center justify-center"
     >
-      <div className="md:w-128 w-64 h-128 bg-white rounded p-4 flex flex-col items-center">
+      <div className="md:w-128 w-80 h-160 bg-white rounded p-4 flex flex-col items-center">
         <div className="flex items-center justify-between p-4 border-b-4 w-full">
           <span className="font-bold text-lg">Select Token</span>
           <Button

@@ -5,7 +5,7 @@ import { useMoralis } from "react-moralis";
 import { useState } from "react";
 import { IoMdWallet } from "react-icons/io";
 
-const Navbar = ({ setShowWalletModal }) => {
+const Navbar = ({ setShowWalletModal, setShowSelectWallet }) => {
   const { authenticate, user, isAuthenticated } = useMoralis();
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -75,7 +75,7 @@ const Navbar = ({ setShowWalletModal }) => {
         <div className="flex items-center justify-between pr-2 ">
           <Button
             onClick={() => {
-              authenticate({ provider: "metamask" });
+              setShowSelectWallet(true);
             }}
             variant="contained"
             className="bg-btnBlue font-bold"

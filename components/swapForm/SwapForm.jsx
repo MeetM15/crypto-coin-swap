@@ -16,8 +16,9 @@ const SwapForm = ({
   setConvertToAmount,
   selectTokenList,
   handleSwap,
+  setShowSelectWallet,
 }) => {
-  const { authenticate, user, isAuthenticated } = useMoralis();
+  const { isAuthenticated } = useMoralis();
   const [anchorMenu, setAnchorMenu] = useState(null);
   const [currencyMenuOpen, setCurrencyMenuOpen] = useState(anchorMenu != null);
   const handleClick = (event) => {
@@ -31,7 +32,7 @@ const SwapForm = ({
   return (
     <Paper
       elevation={3}
-      className="w-full mx-2 sm:mx-0 sm:w-84 h-120 flex flex-col items-center "
+      className="w-full mx-1 sm:mx-0 sm:w-84 h-144 sm:h-128 flex flex-col items-center "
     >
       <div className="flex flex-col items-center justify-between p-4 border-b-2 w-5/6">
         <span className="font-bold text-lg w-full text-center">Swap Token</span>
@@ -76,6 +77,7 @@ const SwapForm = ({
                       setSelectedCurrency([
                         selectTokenList[0].name,
                         selectTokenList[0].logoURI,
+                        selectTokenList[0].price,
                       ]);
                       setCurrencyMenuOpen(false);
                     }}
@@ -95,6 +97,7 @@ const SwapForm = ({
                       setSelectedCurrency([
                         selectTokenList[1].name,
                         selectTokenList[1].logoURI,
+                        selectTokenList[1].price,
                       ]);
                       setCurrencyMenuOpen(false);
                     }}
@@ -202,7 +205,7 @@ const SwapForm = ({
             ) : (
               <Button
                 onClick={() => {
-                  authenticate({ provider: "metamask" });
+                  setShowSelectWallet(true);
                 }}
                 variant="contained"
                 className="bg-btnBlue text-md font-bold w-full"
