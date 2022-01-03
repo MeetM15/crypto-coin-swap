@@ -6,7 +6,7 @@ import { useState } from "react";
 import { IoMdWallet } from "react-icons/io";
 
 const Navbar = ({ setShowWalletModal, setShowSelectWallet }) => {
-  const { authenticate, user, isAuthenticated } = useMoralis();
+  const { authenticate, user, isAuthenticated, logout } = useMoralis();
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuOpen, setMenuOpen] = useState(anchorEl != null);
@@ -69,6 +69,7 @@ const Navbar = ({ setShowWalletModal, setShowSelectWallet }) => {
             >
               Open Wallet
             </MenuItem>
+            <MenuItem onClick={logout}>Disconnect Wallet</MenuItem>
           </Menu>
         </div>
       ) : (

@@ -19,12 +19,14 @@ const selectList = [
     logoURI:
       "https://ethereum.org/static/6b935ac0e6194247347855dc3d328e83/13c43/eth-diamond-black.png",
     price: 3750,
+    chain: "eth",
   },
   {
     name: "bnb",
     logoURI:
       "https://tokens.1inch.io/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c.png",
     price: 525,
+    chain: "bsc",
   },
 ];
 
@@ -103,10 +105,11 @@ const tList = [
 
 export default function Home() {
   const web3 = useMoralisWeb3Api();
+  const { isAuthenticated, user } = useMoralis();
   const { getSupportedTokens } = useOneInchTokens();
   const [tokenList, setTokenList] = useState(tList);
   const [selectTokenList, setSelectTokenList] = useState(selectList);
-  const [selectedCurrency, setSelectedCurrency] = useState(""); //0:name 1:logo 2:price
+  const [selectedCurrency, setSelectedCurrency] = useState(""); //0:name 1:logo 2:price 3:chain
   const [selectedCurrencyPrice, setSelectedCurrencyPrice] = useState(0.0);
   const [convertToCurrency, setConvertToCurrency] = useState(""); //0:symbol , 1:name , 2:price , 3:logo
   const [swapAmount, setSwapAmount] = useState(0.0);
@@ -114,6 +117,7 @@ export default function Home() {
   const [showSelectCurrency, setShowSelectCurrency] = useState(false);
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [showSelectWallet, setShowSelectWallet] = useState(false);
+  const [userBalance, setUserBalance] = useState(0.0);
 
   const handleSwap = () => {
     console.log({
@@ -124,6 +128,18 @@ export default function Home() {
   };
 
   useEffect(() => {
+    const getBal = async () => {
+      const userBal = await web3.account.getNativeBalance({
+        chain: selectedCurrency[3],
+      });
+      return userBal;
+    };
+    if (isAuthenticated && selectedCurrency[0]) {
+      const bal = getBal();
+      console.log("bal : ", bal);
+    }
+  }, [isAuthenticated, selectedCurrency]);
+  useEffect(() => {
     if (swapAmount != 0)
       setConvertToAmount(
         ((swapAmount * selectedCurrency[2]) / convertToCurrency[2]).toFixed(6)
@@ -131,10 +147,6 @@ export default function Home() {
     else setConvertToAmount(0.0);
   }, [swapAmount]);
 
-  useEffect(() => {
-    if (selectedCurrency != "") {
-    }
-  }, [selectedCurrency]);
   useEffect(() => {
     if (tokenList) {
       setConvertToCurrency([
@@ -151,6 +163,7 @@ export default function Home() {
         selectTokenList[0].name,
         selectTokenList[0].logoURI,
         selectTokenList[0].price,
+        selectTokenList[0].chain,
       ]);
     }
   }, [selectTokenList]);
@@ -193,6 +206,8 @@ export default function Home() {
           setConvertToAmount={setConvertToAmount}
           handleSwap={handleSwap}
           setShowSelectWallet={setShowSelectWallet}
+          userBalance={userBalance}
+          setUserBalance={setUserBalance}
         />
       </div>
       <Wallet

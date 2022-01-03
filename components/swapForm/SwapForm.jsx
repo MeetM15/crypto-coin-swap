@@ -17,6 +17,8 @@ const SwapForm = ({
   selectTokenList,
   handleSwap,
   setShowSelectWallet,
+  userBalance,
+  setUserBalance,
 }) => {
   const { isAuthenticated } = useMoralis();
   const [anchorMenu, setAnchorMenu] = useState(null);
@@ -78,6 +80,7 @@ const SwapForm = ({
                         selectTokenList[0].name,
                         selectTokenList[0].logoURI,
                         selectTokenList[0].price,
+                        selectTokenList[0].chain,
                       ]);
                       setCurrencyMenuOpen(false);
                     }}
@@ -98,6 +101,7 @@ const SwapForm = ({
                         selectTokenList[1].name,
                         selectTokenList[1].logoURI,
                         selectTokenList[1].price,
+                        selectTokenList[1].chain,
                       ]);
                       setCurrencyMenuOpen(false);
                     }}
@@ -124,14 +128,8 @@ const SwapForm = ({
                 fullWidth
                 value={swapAmount}
                 onBlur={(e) => {
-                  if (e.target.value > 1) {
-                    e.target.value = 1.0;
-                  }
-                  if (e.target.value < -1) {
-                    e.target.value = 0.0;
-                  }
-                  if (e.target.value < 0 && e.target.value >= -1) {
-                    e.target.value = -Number(e.target.value).toFixed(6);
+                  if (e.target.value <= 0) {
+                    e.target.value = 0;
                   }
                   setSwapAmount(e.target.value);
                 }}
@@ -143,18 +141,6 @@ const SwapForm = ({
                 {`Price : ${Number(selectedCurrency[2]).toFixed(4)} $`}
               </span>
             </div>
-          </div>
-          <div className="w-full flex flex-col items-center justify-center pt-4">
-            <Button
-              className="bg-btnBlue font-bold flex items-center rounded-full w-min"
-              onClick={() => {
-                setShowSelectCurrency(true);
-              }}
-              variant="contained"
-              color="info"
-            >
-              <MdOutlineSwapVert size="32px" />
-            </Button>
           </div>
           <div className="w-full flex flex-col pt-4">
             <div className="w-full flex items-end justify-between">
