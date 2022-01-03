@@ -95,7 +95,6 @@ const SwapForm = ({
                       setSelectedCurrency([
                         selectTokenList[0].name,
                         selectTokenList[0].logoURI,
-                        selectTokenList[0].price,
                         selectTokenList[0].chain,
                       ]);
                       setCurrencyMenuOpen(false);
@@ -116,7 +115,6 @@ const SwapForm = ({
                       setSelectedCurrency([
                         selectTokenList[1].name,
                         selectTokenList[1].logoURI,
-                        selectTokenList[1].price,
                         selectTokenList[1].chain,
                       ]);
                       setCurrencyMenuOpen(false);
