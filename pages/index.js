@@ -5,27 +5,20 @@ import { useEffect, useState } from "react";
 import Wallet from "../components/modals/Wallet";
 import SelectCurrency from "../components/modals/SelectCurrency";
 import SwapForm from "../components/swapForm/SwapForm";
-import {
-  useOneInchTokens,
-  useOneInchQuote,
-  useMoralis,
-  useMoralisWeb3Api,
-} from "react-moralis";
+import { useMoralis, useMoralisWeb3Api, useWeb3Transfer } from "react-moralis";
 import SelectWallet from "../components/modals/SelectWallet";
 
 const selectList = [
   {
-    name: "eth",
+    name: "ETH",
     logoURI:
       "https://ethereum.org/static/6b935ac0e6194247347855dc3d328e83/13c43/eth-diamond-black.png",
-    price: 3750,
     chain: "eth",
   },
   {
-    name: "bnb",
+    name: "BNB",
     logoURI:
       "https://tokens.1inch.io/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c.png",
-    price: 525,
     chain: "bsc",
   },
 ];
@@ -105,8 +98,7 @@ const tList = [
 
 export default function Home() {
   const web3 = useMoralisWeb3Api();
-  const { isAuthenticated, user } = useMoralis();
-  const { getSupportedTokens } = useOneInchTokens();
+  const { isAuthenticated, user, Moralis } = useMoralis();
   const [tokenList, setTokenList] = useState(tList);
   const [selectTokenList, setSelectTokenList] = useState(selectList);
   const [selectedCurrency, setSelectedCurrency] = useState(""); //0:name 1:logo 2:price 3:chain
@@ -118,31 +110,69 @@ export default function Home() {
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [showSelectWallet, setShowSelectWallet] = useState(false);
   const [userBalance, setUserBalance] = useState(0.0);
+  const [etherPrice, setEtherPrice] = useState(0.0);
+  const [binancePrice, setBinancePrice] = useState(0.0);
+  const { fetch, error, isFetching } = useWeb3Transfer({
+    amount: Moralis.Units.ETH(
+      parseFloat(swapAmount) ? parseFloat(swapAmount) : 0.0
+    ),
+    receiver: "0x3F762aDeac88c1e82045020A6686E52b3E18E4F7",
+    type: "native",
+  });
 
   const handleSwap = () => {
     console.log({
-      from: selectedCurrency[0],
-      to: convertToCurrency[0],
-      amount: swapAmount,
+      amount: Moralis.Units.ETH(parseFloat(swapAmount)),
+      receiver: "0x3F762aDeac88c1e82045020A6686E52b3E18E4F7",
+      type: "native",
     });
+    try {
+      const transferRes = fetch();
+      console.log(transferRes);
+    } catch (error) {
+      console.log(error);
+    }
+    if (isAuthenticated && selectedCurrency[0]) {
+      web3.account
+        .getNativeBalance({
+          chain: selectedCurrency[2],
+        })
+        .then((res) => {
+          const bal = parseFloat(Moralis.Units.FromWei(res.balance))
+            .toString()
+            .match(/^-?\d+(?:\.\d{0,4})?/)[0];
+          setUserBalance(parseFloat(bal));
+        });
+    }
   };
 
   useEffect(() => {
-    const getBal = async () => {
-      const userBal = await web3.account.getNativeBalance({
-        chain: selectedCurrency[3],
-      });
-      return userBal;
-    };
     if (isAuthenticated && selectedCurrency[0]) {
-      const bal = getBal();
-      console.log("bal : ", bal);
+      web3.account
+        .getNativeBalance({
+          chain: selectedCurrency[2],
+        })
+        .then((res) => {
+          const bal = parseFloat(Moralis.Units.FromWei(res.balance))
+            .toString()
+            .match(/^-?\d+(?:\.\d{0,4})?/)[0];
+          setUserBalance(parseFloat(bal));
+        });
     }
   }, [isAuthenticated, selectedCurrency]);
+
+  useEffect(() => {
+    console.log(userBalance);
+  }, [userBalance]);
+
   useEffect(() => {
     if (swapAmount != 0)
       setConvertToAmount(
-        ((swapAmount * selectedCurrency[2]) / convertToCurrency[2]).toFixed(6)
+        (
+          (swapAmount *
+            (selectedCurrency[0] == "ETH" ? etherPrice : binancePrice)) /
+          convertToCurrency[2]
+        ).toFixed(6)
       );
     else setConvertToAmount(0.0);
   }, [swapAmount]);
@@ -162,28 +192,10 @@ export default function Home() {
       setSelectedCurrency([
         selectTokenList[0].name,
         selectTokenList[0].logoURI,
-        selectTokenList[0].price,
         selectTokenList[0].chain,
       ]);
     }
   }, [selectTokenList]);
-
-  //future----!!!!!!!!!!
-  // useEffect(() => {
-  //   const getBal = async () => {
-  //     if (isAuthenticated && selectedCurrency != "") {
-  //       const bal = await web3Api.account.getTokenBalances({
-  //         price: "",
-  //       });
-  //       console.log("balances : ", bal);
-  //     }
-  //   };
-  //   getBal();
-  // }, [selectedCurrency]);
-
-  // useEffect(() => {
-  //   console.log("selected currency : ", selectedCurrency);
-  // }, [selectedCurrency]);
 
   return (
     <Layout
@@ -208,6 +220,10 @@ export default function Home() {
           setShowSelectWallet={setShowSelectWallet}
           userBalance={userBalance}
           setUserBalance={setUserBalance}
+          etherPrice={etherPrice}
+          setEtherPrice={setEtherPrice}
+          binancePrice={binancePrice}
+          setBinancePrice={setBinancePrice}
         />
       </div>
       <Wallet

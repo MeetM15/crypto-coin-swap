@@ -1,10 +1,12 @@
 import { Menu, MenuItem, Paper, Button, OutlinedInput } from "@mui/material";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { MdAccountBalanceWallet } from "react-icons/md";
-import { MdOutlineSwapVert } from "react-icons/md";
 import { BsCurrencyExchange } from "react-icons/bs";
 import { useMoralis } from "react-moralis";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+const coingeckoUrl = () => {
+  return `https://api.coingecko.com/api/v3/simple/price?ids=ethereum%2Cbinancecoin&vs_currencies=usd`;
+};
 const SwapForm = ({
   selectedCurrency,
   setSelectedCurrency,
@@ -13,12 +15,14 @@ const SwapForm = ({
   swapAmount,
   setSwapAmount,
   convertToAmount,
-  setConvertToAmount,
   selectTokenList,
   handleSwap,
   setShowSelectWallet,
   userBalance,
-  setUserBalance,
+  etherPrice,
+  setEtherPrice,
+  binancePrice,
+  setBinancePrice,
 }) => {
   const { isAuthenticated } = useMoralis();
   const [anchorMenu, setAnchorMenu] = useState(null);
@@ -31,6 +35,18 @@ const SwapForm = ({
     setAnchorMenu(null);
     setCurrencyMenuOpen(false);
   };
+  useEffect(() => {
+    const fetchPrices = async () => {
+      fetch(coingeckoUrl()).then((response) =>
+        response.json().then((jsonData) => {
+          console.log(jsonData);
+          setEtherPrice(jsonData.ethereum.usd);
+          setBinancePrice(jsonData.binancecoin.usd);
+        })
+      );
+    };
+    fetchPrices();
+  }, []);
   return (
     <Paper
       elevation={3}
@@ -42,7 +58,7 @@ const SwapForm = ({
           Trade tokens in an instant!
         </span>
       </div>
-      <div className="flex flex-col items-center py-2 w-5/6">
+      <div className="flex flex-col items-center py-4 w-5/6">
         <form className="w-full flex flex-col items-center justify-evenly">
           <div className="w-full flex flex-col pt-2">
             <div className="w-full flex items-end justify-between">
@@ -119,7 +135,7 @@ const SwapForm = ({
                 </Menu>
               </div>
               <span className="font-medium text-sm text-gray-500">
-                Balance : 0.0000
+                {`Balance : ${userBalance} ${selectedCurrency[0]}`}
               </span>
             </div>
             <div className="w-full pt-2">
@@ -131,18 +147,23 @@ const SwapForm = ({
                   if (e.target.value <= 0) {
                     e.target.value = 0;
                   }
-                  setSwapAmount(e.target.value);
+                  if (e.target.value >= userBalance) {
+                    e.target.value = userBalance;
+                  }
+                  setSwapAmount(parseFloat(e.target.value));
                 }}
-                onChange={(e) => setSwapAmount(e.target.value)}
+                onChange={(e) => setSwapAmount(parseFloat(e.target.value))}
               />
             </div>
             <div className="w-full flex items-end justify-end">
               <span className="font-medium text-sm text-gray-500">
-                {`Price : ${Number(selectedCurrency[2]).toFixed(4)} $`}
+                {`1 ${selectedCurrency[0]} = ${
+                  selectedCurrency[0] == "ETH" ? etherPrice : binancePrice
+                } $`}
               </span>
             </div>
           </div>
-          <div className="w-full flex flex-col pt-4">
+          <div className="w-full flex flex-col pt-6">
             <div className="w-full flex items-end justify-between">
               <Button
                 className="bg-btnRed font-bold flex items-center"
@@ -162,9 +183,6 @@ const SwapForm = ({
                 )}
                 <IoMdArrowDropdown className="ml-2" size="24px" />
               </Button>
-              <span className="font-medium text-sm text-gray-500">
-                Balance : 0.0000
-              </span>
             </div>
             <div className="w-full mt-2 p-4 font-medium bg-gray-100 rounded">
               {convertToAmount}
@@ -175,7 +193,7 @@ const SwapForm = ({
               </span>
             </div>
           </div>
-          <div className="w-full flex flex-col items-center justify-center pt-4">
+          <div className="w-full flex flex-col items-center justify-center pt-6">
             {isAuthenticated ? (
               <Button
                 className="bg-btnBlue font-medium text-lg flex items-center rounded-full w-full"
