@@ -2,8 +2,12 @@ import { useMoralis } from "react-moralis";
 import { Modal, Button } from "@mui/material";
 import { FaWolfPackBattalion, FaConnectdevelop } from "react-icons/fa";
 import { VscClose } from "react-icons/vsc";
-const SelectWallet = ({ showSelectWallet, setShowSelectWallet }) => {
-  const { logout, user, authenticate } = useMoralis();
+const SelectWallet = ({
+  showSelectWallet,
+  setShowSelectWallet,
+  setWalletConnected,
+}) => {
+  const { enableWeb3, isWeb3Enabled, web3 } = useMoralis();
   return (
     <Modal
       open={showSelectWallet}
@@ -28,7 +32,12 @@ const SelectWallet = ({ showSelectWallet, setShowSelectWallet }) => {
           <Button
             className="bg-btnBlue font-bold w-full h-24 mb-16 sm:mb-0 sm:w-1/2 sm:mr-4"
             onClick={() => {
-              authenticate({ provider: "metamask" });
+              if (isWeb3Enabled && web3.currentProvider.isMetaMask) {
+                console.log(web3.currentProvider);
+                setWalletConnected(true);
+              } else {
+                const res = enableWeb3({ provider: "metamask" });
+              }
               setShowSelectWallet(false);
             }}
             variant="contained"
@@ -40,7 +49,13 @@ const SelectWallet = ({ showSelectWallet, setShowSelectWallet }) => {
           <Button
             className="bg-btnBlue font-bold w-full h-24 sm:w-1/2 flex flex-col mb-2 sm:mb-0"
             onClick={() => {
-              authenticate({ provider: "walletconnect" });
+              if (isWeb3Enabled && !web3.currentProvider.isMetaMask) {
+                console.log(web3.currentProvider);
+                setWalletConnected(true);
+              } else {
+                const res = enableWeb3({ provider: "walletconnect" });
+              }
+
               setShowSelectWallet(false);
             }}
             variant="contained"

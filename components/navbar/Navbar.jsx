@@ -1,13 +1,16 @@
-import { useRouter } from "next/router";
 import { MdAccountBalanceWallet } from "react-icons/md";
 import { Menu, MenuItem, Button } from "@mui/material";
 import { useMoralis } from "react-moralis";
 import { useState } from "react";
 import { IoMdWallet } from "react-icons/io";
 
-const Navbar = ({ setShowWalletModal, setShowSelectWallet }) => {
-  const { authenticate, user, isAuthenticated, logout } = useMoralis();
-  const router = useRouter();
+const Navbar = ({
+  setShowWalletModal,
+  setShowSelectWallet,
+  walletConnected,
+  setWalletConnected,
+}) => {
+  const { web3, isWeb3Enabled } = useMoralis();
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuOpen, setMenuOpen] = useState(anchorEl != null);
   const handleClick = (event) => {
@@ -33,7 +36,9 @@ const Navbar = ({ setShowWalletModal, setShowSelectWallet }) => {
         />
       </div>
 
-      {isAuthenticated ? (
+      {isWeb3Enabled &&
+      walletConnected &&
+      web3.currentProvider.selectedAddress ? (
         <div className="flex items-center pr-2 ">
           <Button
             id="basic-button"
@@ -44,9 +49,12 @@ const Navbar = ({ setShowWalletModal, setShowSelectWallet }) => {
           >
             <span className="font-bold w-32 flex items-center justify-center">
               <span className="flex items-center justify-center truncate w-full text-white">
-                {`${String(user.get("ethAddress")).substring(0, 4)}...
-                  ${String(user.get("ethAddress")).substring(
-                    String(user.get("ethAddress")).length - 4
+                {`${String(web3.currentProvider.selectedAddress).substring(
+                  0,
+                  4
+                )}...
+                  ${String(web3.currentProvider.selectedAddress).substring(
+                    String(web3.currentProvider.selectedAddress).length - 4
                   )}`}
               </span>
               <IoMdWallet className="text-white ml-2" size="24px" />
@@ -69,7 +77,14 @@ const Navbar = ({ setShowWalletModal, setShowSelectWallet }) => {
             >
               Open Wallet
             </MenuItem>
-            <MenuItem onClick={logout}>Disconnect Wallet</MenuItem>
+            <MenuItem
+              onClick={() => {
+                setWalletConnected(false);
+                setMenuOpen(false);
+              }}
+            >
+              Disconnect
+            </MenuItem>
           </Menu>
         </div>
       ) : (

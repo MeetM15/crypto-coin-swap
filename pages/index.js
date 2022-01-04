@@ -7,6 +7,7 @@ import SelectCurrency from "../components/modals/SelectCurrency";
 import SwapForm from "../components/swapForm/SwapForm";
 import { useMoralis, useMoralisWeb3Api, useWeb3Transfer } from "react-moralis";
 import SelectWallet from "../components/modals/SelectWallet";
+import { useRouter } from "next/router";
 
 const selectList = [
   {
@@ -97,8 +98,9 @@ const tList = [
 ];
 
 export default function Home() {
-  const web3 = useMoralisWeb3Api();
-  const { isAuthenticated, user, Moralis } = useMoralis();
+  const router = useRouter();
+  const web3Api = useMoralisWeb3Api();
+  const { isWeb3Enabled, Moralis, web3 } = useMoralis();
   const [tokenList, setTokenList] = useState(tList);
   const [selectTokenList, setSelectTokenList] = useState(selectList);
   const [selectedCurrency, setSelectedCurrency] = useState(""); //0:name 1:logo 2:price 3:chain
@@ -112,7 +114,9 @@ export default function Home() {
   const [userBalance, setUserBalance] = useState(0.0);
   const [etherPrice, setEtherPrice] = useState(0.0);
   const [binancePrice, setBinancePrice] = useState(0.0);
-  const { fetch, error, isFetching } = useWeb3Transfer({
+  const [walletConnected, setWalletConnected] = useState(isWeb3Enabled);
+
+  const { fetch } = useWeb3Transfer({
     amount: Moralis.Units.ETH(
       parseFloat(swapAmount) ? parseFloat(swapAmount) : 0.0
     ),
@@ -132,8 +136,8 @@ export default function Home() {
     } catch (error) {
       console.log(error);
     }
-    if (isAuthenticated && selectedCurrency[0]) {
-      web3.account
+    if (isWeb3Enabled && selectedCurrency[0]) {
+      web3Api.account
         .getNativeBalance({
           chain: selectedCurrency[2],
         })
@@ -147,8 +151,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (isAuthenticated && selectedCurrency[0]) {
-      web3.account
+    if (isWeb3Enabled && selectedCurrency[0]) {
+      web3Api.account
         .getNativeBalance({
           chain: selectedCurrency[2],
         })
@@ -159,11 +163,15 @@ export default function Home() {
           setUserBalance(parseFloat(bal));
         });
     }
-  }, [isAuthenticated, selectedCurrency]);
+  }, [isWeb3Enabled, selectedCurrency]);
 
   useEffect(() => {
-    console.log(userBalance);
-  }, [userBalance]);
+    console.log(web3.currentProvider);
+  }, [web3.currentProvider]);
+
+  useEffect(() => {
+    setWalletConnected(isWeb3Enabled);
+  }, [isWeb3Enabled]);
 
   useEffect(() => {
     if (swapAmount != 0)
@@ -201,6 +209,8 @@ export default function Home() {
     <Layout
       setShowWalletModal={setShowWalletModal}
       setShowSelectWallet={setShowSelectWallet}
+      walletConnected={walletConnected}
+      setWalletConnected={setWalletConnected}
     >
       <Head>
         <title>Crypto Exchange</title>
@@ -224,11 +234,14 @@ export default function Home() {
           setEtherPrice={setEtherPrice}
           binancePrice={binancePrice}
           setBinancePrice={setBinancePrice}
+          walletConnected={walletConnected}
         />
       </div>
       <Wallet
         setShowWalletModal={setShowWalletModal}
         showWalletModal={showWalletModal}
+        walletConnected={walletConnected}
+        setWalletConnected={setWalletConnected}
       />
       <SelectCurrency
         showSelectCurrency={showSelectCurrency}
@@ -239,6 +252,7 @@ export default function Home() {
       <SelectWallet
         showSelectWallet={showSelectWallet}
         setShowSelectWallet={setShowSelectWallet}
+        setWalletConnected={setWalletConnected}
       />
     </Layout>
   );

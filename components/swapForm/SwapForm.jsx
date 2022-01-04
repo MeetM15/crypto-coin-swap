@@ -23,8 +23,9 @@ const SwapForm = ({
   setEtherPrice,
   binancePrice,
   setBinancePrice,
+  walletConnected,
 }) => {
-  const { isAuthenticated } = useMoralis();
+  const { isWeb3Enabled, web3 } = useMoralis();
   const [anchorMenu, setAnchorMenu] = useState(null);
   const [currencyMenuOpen, setCurrencyMenuOpen] = useState(anchorMenu != null);
   const handleClick = (event) => {
@@ -153,7 +154,17 @@ const SwapForm = ({
                 onChange={(e) => setSwapAmount(parseFloat(e.target.value))}
               />
             </div>
-            <div className="w-full flex items-end justify-end">
+            <div className="w-full flex items-center justify-between h-8">
+              <Button
+                className="text-xs mt-1 font-bold rounded-full border-2"
+                variant="outlined"
+                color="info"
+                onClick={() => {
+                  setSwapAmount(userBalance);
+                }}
+              >
+                max
+              </Button>
               <span className="font-medium text-sm text-gray-500">
                 {`1 ${selectedCurrency[0]} = ${
                   selectedCurrency[0] == "ETH" ? etherPrice : binancePrice
@@ -192,7 +203,9 @@ const SwapForm = ({
             </div>
           </div>
           <div className="w-full flex flex-col items-center justify-center pt-6">
-            {isAuthenticated ? (
+            {isWeb3Enabled &&
+            walletConnected &&
+            web3.currentProvider.selectedAddress ? (
               <Button
                 className="bg-btnBlue font-medium text-lg flex items-center rounded-full w-full"
                 onClick={() => {

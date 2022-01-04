@@ -1,4 +1,3 @@
-import { useMoralis } from "react-moralis";
 import { Paper, Modal, OutlinedInput, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { VscClose } from "react-icons/vsc";
