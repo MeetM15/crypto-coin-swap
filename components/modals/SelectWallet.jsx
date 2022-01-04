@@ -7,7 +7,7 @@ const SelectWallet = ({
   setShowSelectWallet,
   setWalletConnected,
 }) => {
-  const { enableWeb3, isWeb3Enabled, web3, authenticate } = useMoralis();
+  const { enableWeb3, isWeb3Enabled, web3 } = useMoralis();
   return (
     <Modal
       open={showSelectWallet}
@@ -37,6 +37,7 @@ const SelectWallet = ({
                 setWalletConnected(true);
               } else {
                 const res = enableWeb3({ provider: "metamask" });
+                setWalletConnected(true);
               }
               setShowSelectWallet(false);
             }}
@@ -50,12 +51,11 @@ const SelectWallet = ({
             className="bg-btnBlue font-bold w-full h-24 sm:w-1/2 flex flex-col mb-2 sm:mb-0"
             onClick={() => {
               if (isWeb3Enabled && !web3.currentProvider.isMetaMask) {
-                console.log(web3.currentProvider);
                 setWalletConnected(true);
               } else {
-                authenticate({ provider: "walletconnect" });
+                const res = enableWeb3({ provider: "walletconnect" });
+                setWalletConnected(true);
               }
-
               setShowSelectWallet(false);
             }}
             variant="contained"

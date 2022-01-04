@@ -154,7 +154,7 @@ const SwapForm = ({
                 onChange={(e) => setSwapAmount(parseFloat(e.target.value))}
               />
             </div>
-            <div className="w-full flex items-center justify-between h-8">
+            <div className="w-full flex items-center justify-between h-8 mt-1">
               <Button
                 className="text-xs mt-1 font-bold rounded-full border-2"
                 variant="outlined"

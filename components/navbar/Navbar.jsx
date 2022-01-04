@@ -36,9 +36,10 @@ const Navbar = ({
         />
       </div>
 
-      {isWeb3Enabled &&
-      walletConnected &&
-      web3.currentProvider.selectedAddress ? (
+      {web3.currentProvider &&
+      (web3.currentProvider.accounts || web3.currentProvider.selectedAddress) &&
+      isWeb3Enabled &&
+      walletConnected ? (
         <div className="flex items-center pr-2 ">
           <Button
             id="basic-button"
@@ -49,12 +50,20 @@ const Navbar = ({
           >
             <span className="font-bold w-32 flex items-center justify-center">
               <span className="flex items-center justify-center truncate w-full text-white">
-                {`${String(web3.currentProvider.selectedAddress).substring(
-                  0,
-                  4
-                )}...
+                {web3.currentProvider.isMetaMask
+                  ? `${String(web3.currentProvider.selectedAddress).substring(
+                      0,
+                      4
+                    )}...
                   ${String(web3.currentProvider.selectedAddress).substring(
                     String(web3.currentProvider.selectedAddress).length - 4
+                  )}`
+                  : `${String(web3.currentProvider.accounts[0]).substring(
+                      0,
+                      4
+                    )}...
+                  ${String(web3.currentProvider.accounts[0]).substring(
+                    String(web3.currentProvider.accounts[0]).length - 4
                   )}`}
               </span>
               <IoMdWallet className="text-white ml-2" size="24px" />
