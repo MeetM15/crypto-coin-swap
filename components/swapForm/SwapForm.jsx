@@ -203,9 +203,11 @@ const SwapForm = ({
             </div>
           </div>
           <div className="w-full flex flex-col items-center justify-center pt-6">
-            {isWeb3Enabled &&
-            walletConnected &&
-            web3.currentProvider.selectedAddress ? (
+            {web3.currentProvider &&
+            (web3.currentProvider.accounts ||
+              web3.currentProvider.selectedAddress) &&
+            isWeb3Enabled &&
+            walletConnected ? (
               <Button
                 className="bg-btnBlue font-medium text-lg flex items-center rounded-full w-full"
                 onClick={() => {
