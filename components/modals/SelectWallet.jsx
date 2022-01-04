@@ -7,7 +7,7 @@ const SelectWallet = ({
   setShowSelectWallet,
   setWalletConnected,
 }) => {
-  const { enableWeb3, isWeb3Enabled, web3 } = useMoralis();
+  const { enableWeb3, isWeb3Enabled, web3, authenticate } = useMoralis();
   return (
     <Modal
       open={showSelectWallet}
@@ -53,7 +53,7 @@ const SelectWallet = ({
                 console.log(web3.currentProvider);
                 setWalletConnected(true);
               } else {
-                const res = enableWeb3({ provider: "walletconnect" });
+                authenticate({ provider: "walletconnect" });
               }
 
               setShowSelectWallet(false);
