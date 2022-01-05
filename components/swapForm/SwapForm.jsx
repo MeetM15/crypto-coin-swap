@@ -29,8 +29,10 @@ const SwapForm = ({
 }) => {
   const { isWeb3Enabled, web3 } = useMoralis();
   const [anchorMenu, setAnchorMenu] = useState(null);
+  const [anchorNodeMenu, setAnchorNodeMenu] = useState(null);
   const [nodeValue, setNodeValue] = useState("Select Node");
   const [currencyMenuOpen, setCurrencyMenuOpen] = useState(anchorMenu != null);
+  const [nodeMenuOpen, setNodeMenuOpen] = useState(anchorNodeMenu != null);
 
   const handleClick = (e) => {
     setAnchorMenu(e.currentTarget);
@@ -40,7 +42,11 @@ const SwapForm = ({
     setAnchorMenu(null);
     setCurrencyMenuOpen(false);
   };
-  const handleNodeChange = (e) => {
+  const handleNodeClick = (e) => {
+    setAnchorNodeMenu(e.currentTarget);
+    setNodeMenuOpen(true);
+  };
+  const handleNodeMenuClose = (e) => {
     setNodeValue(e.target.value);
   };
   useEffect(() => {
@@ -57,7 +63,7 @@ const SwapForm = ({
   }, []);
   return (
     <div
-      className="bg-secondary rounded-2xl w-full mx-1 sm:mx-0 sm:w-84 min-h-144 sm:min-h-128 flex flex-col items-center "
+      className="bg-secondary rounded-2xl w-full mx-1 sm:mx-0 sm:w-132 min-h-144 sm:min-h-128 flex flex-col items-center "
     >
       <div className="flex flex-col items-center justify-between p-6 border-b border-#E7E3EB w-full">
         <span className="font-bold text-xl w-full text-center">Snipe Bot</span>
@@ -250,20 +256,43 @@ const SwapForm = ({
             Node
             </div>
               <div className="w-full flex items-center justify-center pt-2">
-              <Select
-                value={nodeValue}
-                onChange={handleNodeChange} 
-                variant="filled" 
-                fullWidth          
+                <button
+                id="desktop"
+                    className="hidden sm:flex bg-inputbg text-sm text-inputText font-medium p-2 w-full rounded items-center justify-center shadow-inner"
+                    onClick={handleNodeClick}
+                    type="button"
+                  >
+                  {`${nodeValue ? nodeValue.substring(0,48) : "Select Node"}...`}   
+                  <IoMdArrowDropdown className="ml-1" size="20px"/>              
+                </button>
+                <button
+                id="mobile"
+                    className="sm:hidden bg-inputbg text-sm text-inputText font-medium py-3 px-6 w-full flex rounded-xl items-center justify-center shadow-inner"
+                    onClick={handleNodeClick}
+                    type="button"
+                  >
+                  {`${nodeValue ? nodeValue.substring(0,20) : "Select Node"}...`}   
+                  <IoMdArrowDropdown className="ml-1" size="20px"/>              
+                </button>
+              <Menu
+                anchorEl={anchorNodeMenu}
+                open={nodeMenuOpen}
+                onClose={handleNodeMenuClose}
+                fullWidth         
               >
-                  <MenuItem disabled value={"Select Node"}>Select Node</MenuItem>
                   {
                     nodesList.map((node,index)=>{
-                      return <MenuItem key={index} value={node} className="w-72">{node}</MenuItem>;
+                      return <MenuItem key={index} 
+                      onClick={() => {
+                        setNodeValue(node);
+                        setNodeMenuOpen(false);
+                      }} 
+                      className="w-screen sm:w-112">
+                        {node}
+                        </MenuItem>
                     })
-                  }
-                  
-              </Select>
+                  }                 
+              </Menu>
               </div>    
           </div>
           <div className="w-full flex flex-col items-center justify-center pt-6">
