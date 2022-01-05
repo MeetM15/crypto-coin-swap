@@ -6,14 +6,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "rgb(224 ,242 ,254)",
+        primary: "#F5FAFF",
         secondary: "white",
         secondaryDark: "#5b21b6",
         secondaryLight: "#8b5cf6",
-        btnBlue: "rgb(6 ,182, 212)",
+        btnBlue: "#0071FF",
         btnRed: "rgb(220 ,38 ,38);",
+        subText:"#A0A3A3",
+        inputbg:"#F6F5FA",
+        inputText:"#9B9B9B",
+        walletbg1:"#FFEEDE",
+        walletbg2:"#EAF4FF"
       },
       width: {
+        42: "10.5rem",
+        46: "11.5rem",
         76: "19rem",
         80: "20rem",
         84: "21rem",

@@ -1,7 +1,7 @@
 import { useMoralis } from "react-moralis";
-import { Modal, Button } from "@mui/material";
 import { MdContentCopy } from "react-icons/md";
 import { VscDebugDisconnect, VscClose } from "react-icons/vsc";
+import {Modal}from "@mui/material"
 
 const Wallet = ({
   showWalletModal,
@@ -12,29 +12,29 @@ const Wallet = ({
   const { isWeb3Enabled, web3 } = useMoralis();
   return (
     <Modal
-      open={showWalletModal}
-      onClose={() => setShowWalletModal(false)}
+    open={showWalletModal}
+    onClose={() => setShowWalletModal(false)}
       className="flex items-center justify-center"
     >
       {web3.currentProvider &&
       (web3.currentProvider.accounts || web3.currentProvider.selectedAddress) &&
       isWeb3Enabled &&
       walletConnected ? (
-        <div className="md:w-128 w-80 h-120 bg-white rounded p-4 flex flex-col items-center">
-          <div className="p-4 w-full font-bold font-large flex items-center justify-between text-black border-b-2">
-            <span className="font-bold text-lg">Your Wallet</span>
-            <Button
-              className="bg-btnRed font-bold flex items-center rounded-full w-min"
-              onClick={() => {
-                setShowWalletModal(false);
-              }}
-              variant="contained"
-              color="info"
-            >
-              <VscClose size="24px" />
-            </Button>
-          </div>
-          <div className="flex flex-col items-center mt-16 h-full w-full px-4 pb-4">
+        <div className="md:w-112 w-80 h-min-96 bg-white rounded p-4 flex flex-col items-center">
+          <div className="flex items-center justify-between p-4 border-b-4 w-full">
+          <span className="font-bold text-2xl">Select Wallet</span>
+          <button
+            className="font-medium flex items-center w-min"
+            onClick={() => {
+              setShowWalletModal(false);
+            }}     
+            type="button"       
+          >
+            <VscClose size="24px" />
+          </button>
+        </div>
+          
+          <div className="flex flex-col items-center mt-8 h-full w-full px-4 pb-4">
             <span className="flex flex-col items-center justify-center font-medium text-md mb-8 bg-gray-200 w-full rounded px-1 py-4">
               Wallet address :
               <span className="text-center font-medium text-md p-2 w-full rounded break-all md:break-none flex items-center justify-center">
@@ -54,18 +54,17 @@ const Wallet = ({
                 />
               </span>
             </span>
-            <Button
-              className="bg-btnRed font-bold h-14 w-full"
+            <button
+              className="bg-btnBlue text-white text-sm font-medium px-4 py-3 w-64 flex rounded items-center justify-center"
               onClick={() => {
                 setWalletConnected(false);
                 setShowWalletModal(false);
               }}
-              variant="contained"
-              color="error"
+              type="button" 
             >
               Disconnect Wallet
               <VscDebugDisconnect className="ml-2" size="24px" />
-            </Button>
+            </button>
           </div>
         </div>
       ) : (

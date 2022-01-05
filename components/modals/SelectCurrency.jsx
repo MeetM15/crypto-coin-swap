@@ -1,6 +1,6 @@
-import { Paper, Modal, OutlinedInput, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { VscClose } from "react-icons/vsc";
+import {Modal}from "@mui/material"
 const SelectCurrency = ({
   showSelectCurrency,
   setShowSelectCurrency,
@@ -10,11 +10,14 @@ const SelectCurrency = ({
   const [search, setSearch] = useState("");
   const [searchList, setSearchList] = useState(tokenList);
   useEffect(() => {
-    if ((search != "" || search == " ") && searchList != undefined) {
+    if ((search != "" || search != " ") && searchList != undefined) {
       const newList = tokenList.filter((token) =>
         String(token.name).toLowerCase().includes(search.toLowerCase())
       );
       setSearchList(newList);
+    }
+    if((search == "" || search == " ")){
+      setSearchList(tokenList);
     }
   }, [search]);
   useEffect(() => {
@@ -26,35 +29,31 @@ const SelectCurrency = ({
       onClose={() => setShowSelectCurrency(false)}
       className="flex items-center justify-center"
     >
-      <div className="md:w-128 w-80 h-160 bg-white rounded p-4 flex flex-col items-center">
+      <div className="md:w-128 w-80 h-112 bg-white rounded-2xl p-4 flex flex-col items-center">
         <div className="flex items-center justify-between p-4 border-b-4 w-full">
-          <span className="font-bold text-lg">Select Token</span>
-          <Button
-            className="bg-btnRed font-bold flex items-center rounded-full w-min"
+          <span className="font-medium text-xl">Select a Token</span>
+          <button
+            className="font-medium flex items-center w-min"
             onClick={() => {
               setShowSelectCurrency(false);
-            }}
-            variant="contained"
-            color="info"
+            }}     
+            type="button"       
           >
             <VscClose size="24px" />
-          </Button>
+          </button>
         </div>
-        <OutlinedInput
-          fullWidth
+        <input
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          variant="contained"
-          className="mt-2 rounded-full"
+          placeholder="Search here..."
+          onChange={(e) => setSearch(e.target.value)}     
+          className="w-full bg-inputbg py-3 px-6 rounded-2xl shadow-inner text-inputText font-medium mt-4"
         />
         <div className="flex flex-col w-full items-center overflow-auto mt-2">
           {searchList.map((token, index) => {
             return (
-              <Button
+              <button
                 key={index}
-                className="bg-btnBlue flex w-full h-24 items-center justify-between px-4 py-2 mb-1 rounded-full"
-                variant="contained"
-                color={"primary"}
+                className="flex w-full h-24 items-center justify-between px-4 py-2 mb-1 border-b"
                 onClick={() => {
                   setConvertToCurrency([
                     token.symbol,
@@ -64,19 +63,21 @@ const SelectCurrency = ({
                   ]);
                   setShowSelectCurrency(false);
                 }}
+                type="button" 
               >
-                <div className="w-5/6 flex items-center">
-                  <span className="w-3/4 flex items-center font-bold">
+                <div className="flex items-center justify-evenly mr-2">
+                  <img src={token.logoURI} alt="logo" className="h-8" />
+                </div>
+                <div className="flex items-center justify-between w-full">
+                  <span className="flex items-center font-medium text-md">
                     {token.name}
                   </span>
-                  <span className="w-1/4 flex items-center font-bold text-black">
+                  <span className="flex items-center font-base text-md text-inputText">
                     {token.symbol}
                   </span>
                 </div>
-                <div className="w-1/6 flex items-center justify-end">
-                  <img src={token.logoURI} alt="logo" className="h-12" />
-                </div>
-              </Button>
+                
+              </button>
             );
           })}
         </div>

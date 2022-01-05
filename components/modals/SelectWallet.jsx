@@ -1,7 +1,8 @@
 import { useMoralis } from "react-moralis";
-import { Modal, Button } from "@mui/material";
 import { FaWolfPackBattalion, FaConnectdevelop } from "react-icons/fa";
 import { VscClose } from "react-icons/vsc";
+import {Modal}from "@mui/material"
+
 const SelectWallet = ({
   showSelectWallet,
   setShowSelectWallet,
@@ -14,23 +15,24 @@ const SelectWallet = ({
       onClose={() => setShowSelectWallet(false)}
       className="flex items-center justify-center"
     >
-      <div className="md:w-128 w-80 h-96 bg-white rounded p-4 flex flex-col items-center">
-        <div className="p-4 font-bold font-large flex items-center justify-between text-black border-b-2 w-full">
-          <span className="font-bold text-lg">Select Wallet</span>
-          <Button
-            className="bg-btnRed font-bold flex items-center rounded-full w-min"
+      <div className="md:w-128 w-80 h-min-96 bg-white rounded-2xl p-4 flex flex-col items-center">
+      <div className="flex items-center justify-between p-4 border-b-4 w-full">
+          <span className="font-bold text-2xl">Select Wallet</span>
+          <button
+            className="font-medium flex items-center w-min"
             onClick={() => {
               setShowSelectWallet(false);
-            }}
-            variant="contained"
-            color="info"
+            }}     
+            type="button"       
           >
             <VscClose size="24px" />
-          </Button>
+          </button>
         </div>
-        <div className="flex flex-col justify-center sm:flex-row sm:items-center sm:justify-between h-full w-full px-2 pb-4">
-          <Button
-            className="bg-btnBlue font-bold w-full h-24 mb-16 sm:mb-0 sm:w-1/2 sm:mr-4"
+       
+        <div className="flex flex-col justify-center items-center sm:flex-row sm:items-start mt-8 h-full w-full px-2 pb-4">
+          <div className="w-42 h-42 flex flex-col items-center  mb-16 sm:mb-0  sm:mr-4">
+          <button
+            className="bg-walletbg1 rounded-2xl font-bold h-36 w-36 sm:w-36 flex items-center justify-center"
             onClick={() => {
               if (isWeb3Enabled && web3.currentProvider.isMetaMask) {
                 console.log(web3.currentProvider);
@@ -41,14 +43,15 @@ const SelectWallet = ({
               }
               setShowSelectWallet(false);
             }}
-            variant="contained"
-            color="error"
-          >
-            Metamask
-            <FaWolfPackBattalion className="ml-2" size="24px" />
-          </Button>
-          <Button
-            className="bg-btnBlue font-bold w-full h-24 sm:w-1/2 flex flex-col mb-2 sm:mb-0"
+            type="button" 
+          >        
+            <img src="/metamask.svg" alt="metamask" className="h-12" />
+          </button>
+          <span className="font-medium text-lg">Metamask</span>
+          </div>
+          <div className="w-42 h-42 flex flex-col items-center  mb-16 sm:mb-0  sm:mr-4">
+          <button
+            className="bg-walletbg2 rounded-2xl font-bold h-36 w-36 sm:w-36 flex items-center justify-center"
             onClick={() => {
               if (isWeb3Enabled && !web3.currentProvider.isMetaMask) {
                 setWalletConnected(true);
@@ -58,17 +61,14 @@ const SelectWallet = ({
               }
               setShowSelectWallet(false);
             }}
-            variant="contained"
-            color="error"
+            type="button" 
           >
-            <span className="w-full font-bold flex items-center justify-center">
-              WalletConnect
-              <FaConnectdevelop className="ml-2" size="24px" />
-            </span>
-            <span className="w-full text-xs font-bold">
-              (For mobile users only!)
-            </span>
-          </Button>
+            <img src="/wconnect.svg" alt="wconnect" className="h-12" />
+          </button>
+          <span className="font-medium text-lg  text-center">
+              WalletConnect(For mobile users only!)
+          </span>
+          </div>
         </div>
       </div>
     </Modal>

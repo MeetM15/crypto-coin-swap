@@ -215,7 +215,7 @@ export default function Home() {
       <Head>
         <title>Crypto Exchange</title>
       </Head>
-      <div className="w-full p-2 flex items-center justify-center">
+      <div className="w-full p-2 flex flex-col items-center justify-center">
         <SwapForm
           selectedCurrency={selectedCurrency}
           setSelectedCurrency={setSelectedCurrency}
@@ -236,6 +236,12 @@ export default function Home() {
           setBinancePrice={setBinancePrice}
           walletConnected={walletConnected}
         />
+        <div className="w-full flex flex-col items-center justify-center p-8">
+          <span className="font-medium text-lg p-2">Join our community</span>
+          <a href="https://t.me/example">
+          <img  src="/telegramLogo.svg" alt="telegramLogo" className="h-12 mt-1 cursor-pointer"/>
+          </a>
+        </div>
       </div>
       <Wallet
         setShowWalletModal={setShowWalletModal}

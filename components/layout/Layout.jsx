@@ -8,7 +8,7 @@ const Layout = ({
   setWalletConnected,
 }) => {
   return (
-    <div className="bg-primary min-h-screen">
+    <div className="font-sans bg-primary min-h-screen">
       <Navbar
         setShowWalletModal={setShowWalletModal}
         setShowSelectWallet={setShowSelectWallet}

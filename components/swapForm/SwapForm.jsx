@@ -1,9 +1,9 @@
-import { Menu, MenuItem, Paper, Button, OutlinedInput , Select ,InputLabel} from "@mui/material";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { MdAccountBalanceWallet } from "react-icons/md";
 import { BsCurrencyExchange } from "react-icons/bs";
 import { useMoralis } from "react-moralis";
 import { useState, useEffect } from "react";
+import { Select , MenuItem , Menu } from "@mui/material"
 const coingeckoUrl = () => {
   return `https://api.coingecko.com/api/v3/simple/price?ids=ethereum%2Cbinancecoin&vs_currencies=usd`;
 };
@@ -32,7 +32,6 @@ const SwapForm = ({
   const [nodeValue, setNodeValue] = useState("Select Node");
   const [currencyMenuOpen, setCurrencyMenuOpen] = useState(anchorMenu != null);
 
-
   const handleClick = (e) => {
     setAnchorMenu(e.currentTarget);
     setCurrencyMenuOpen(true);
@@ -57,46 +56,45 @@ const SwapForm = ({
     fetchPrices();
   }, []);
   return (
-    <Paper
-      elevation={3}
-      className="w-full mx-1 sm:mx-0 sm:w-84 min-h-144 sm:min-h-128 flex flex-col items-center "
+    <div
+      className="bg-secondary rounded-2xl w-full mx-1 sm:mx-0 sm:w-84 min-h-144 sm:min-h-128 flex flex-col items-center "
     >
-      <div className="flex flex-col items-center justify-between p-4 border-b-2 w-5/6">
-        <span className="font-bold text-lg w-full text-center">Swap Token</span>
-        <span className="font-medium text-base w-full text-center">
+      <div className="flex flex-col items-center justify-between p-6 border-b border-#E7E3EB w-full">
+        <span className="font-bold text-xl w-full text-center">Snipe Bot</span>
+        <span className="font-base text-sm text-subText w-full text-center">
           Trade tokens in an instant!
         </span>
       </div>
-      <div className="flex flex-col items-center py-4 w-5/6">
+      <div className="flex flex-col items-center px-8 py-4 w-full">
         <form className="w-full flex flex-col items-center justify-evenly">
           <div className="w-full flex flex-col pt-2">
             <div className="w-full flex items-end justify-between">
-              <div>
-                <Button
-                  id="select-button"
-                  className="bg-btnRed font-bold flex items-center"
-                  onClick={handleClick}
-                  variant="contained"
-                  color="error"
+              <div className="flex">
+                <span
+                  className="p-1 text-sm font-medium flex items-center"
                 >
-                  {selectedCurrency[0] ? selectedCurrency[0] : ""}
                   {selectedCurrency[1] && (
                     <img
                       src={selectedCurrency[1]}
                       alt="logo"
-                      className="h-5 ml-2"
+                      className="h-5 mr-2"
                     />
                   )}
-                  <IoMdArrowDropdown className="ml-2" size="24px" />
-                </Button>
+                  {selectedCurrency[0] ? (selectedCurrency[0]=="ETH"?"Ethereum":"Binance") : ""}                 
+                </span>
+                <button
+                  className="bg-transparent ml-2 text-xs text-inputText font-medium p-1 w-full flex rounded items-center justify-center"
+                  onClick={handleClick}
+                  type="button"
+                >
+                  {selectedCurrency[0] ? selectedCurrency[0] : ""}   
+                  <IoMdArrowDropdown className="ml-1"/>              
+                </button>
                 <Menu
                   id="basic-currency-menu"
                   anchorEl={anchorMenu}
                   open={currencyMenuOpen}
                   onClose={handleClose}
-                  MenuListProps={{
-                    "aria-labelledby": "select-button",
-                  }}
                   fullWidth
                 >
                   <MenuItem
@@ -146,9 +144,9 @@ const SwapForm = ({
               </span>
             </div>
             <div className="w-full pt-2">
-              <OutlinedInput
+              <input
                 type="number"
-                fullWidth
+                className="w-full bg-inputbg py-3 px-6 rounded-xl shadow-inner text-inputText font-medium"
                 value={swapAmount}
                 onBlur={(e) => {
                   if (e.target.value <= 0) {
@@ -163,16 +161,15 @@ const SwapForm = ({
               />
             </div>
             <div className="w-full flex items-center justify-between h-8 mt-1">
-              <Button
-                className="text-xs mt-1 font-bold rounded-full border-2"
-                variant="outlined"
-                color="info"
+              <button
+                className="border-2 border-btnBlue text-xs font-medium px-3 py-1 flex rounded-xl items-center justify-center"
                 onClick={() => {
                   setSwapAmount(userBalance);
                 }}
+                type="button"
               >
-                max
-              </Button>
+                Max
+              </button>
               <span className="font-medium text-sm text-gray-500">
                 {`1 ${selectedCurrency[0]} = $${
                   selectedCurrency[0] == "ETH" ? etherPrice : binancePrice
@@ -181,77 +178,83 @@ const SwapForm = ({
             </div>
           </div>
           <div className="w-full flex flex-col pt-6">
-            <div className="w-full flex items-end justify-between">
-              <Button
-                className="bg-btnRed font-bold flex items-center"
+            <div className="w-full flex items-center justify-start">
+              <span
+                  className="p-1 text-sm font-medium flex items-center"
+                >
+                  {convertToCurrency[3] && (
+                    <img
+                      src={convertToCurrency[3]}
+                      alt="logo"
+                      className="h-5 mr-2"
+                    />
+                  )}
+                  {convertToCurrency[1] ? convertToCurrency[1] : ""}                 
+              </span>
+              <button
+                className="bg-transparent ml-2 text-xs text-inputText font-medium p-1 flex rounded items-center justify-center"
                 onClick={() => {
                   setShowSelectCurrency(true);
                 }}
-                variant="contained"
-                color="error"
+                type="button"
               >
                 {convertToCurrency[0] ? convertToCurrency[0] : ""}
-                {convertToCurrency[3] && (
-                  <img
-                    src={convertToCurrency[3]}
-                    alt="logo"
-                    className="h-5 ml-2"
-                  />
-                )}
-                <IoMdArrowDropdown className="ml-2" size="24px" />
-              </Button>
+                
+                <IoMdArrowDropdown className="ml-2" />
+              </button>
             </div>
-            <div className="w-full mt-2 p-4 font-medium bg-gray-100 rounded">
+            <div className="w-full bg-inputbg py-3 px-6 rounded-xl shadow-inner text-inputText font-medium">
               {convertToAmount}
             </div>
             <div className="w-full flex items-end justify-end">
               <span className="font-medium text-sm text-gray-500">
-                {`Price : $${Number(convertToCurrency[2]).toFixed(4)}`}
+                {`Price = $${Number(convertToCurrency[2]).toFixed(4)}`}
               </span>
             </div>
           </div>
           <div className="w-full flex flex-col pt-6">
-            <div className="w-full font-medium text-base text-center">
+            <div className="w-full font-medium text-sm text-center">
               Max Slippage(Recommended 20)
             </div>
             <div className="w-full pt-2">
-              <OutlinedInput
+              <input
                 type="number"
-                fullWidth
+                className="w-full bg-inputbg py-3 px-6 rounded-xl shadow-inner text-inputText font-medium"
               />
             </div>
           </div>
           <div className="w-full flex flex-col pt-6">
-            <div className="w-full font-medium text-base text-center">
+            <div className="w-full font-medium text-sm text-center">
             Max Gas (Recommended 10000000)
             </div>
             <div className="w-full pt-2">
-              <OutlinedInput
+              <input
                 type="number"
-                fullWidth
+                className="w-full bg-inputbg py-3 px-6 rounded-xl shadow-inner text-inputText font-medium"
               />
             </div>
           </div>
           <div className="w-full flex flex-col pt-6">
-            <div className="w-full font-medium text-base text-center">
+            <div className="w-full font-medium text-sm text-center">
             Gwei (Recommended 49)
             </div>
             <div className="w-full pt-2">
-              <OutlinedInput
+              <input
                 type="number"
-                fullWidth
+                className="w-full bg-inputbg py-3 px-6 rounded-xl shadow-inner text-inputText font-medium"
               />
             </div>
           </div>
           <div className="w-full flex flex-col pt-6">
-          <div className="w-full font-medium text-base text-center">
+          <div className="w-full font-medium text-sm text-center">
             Node
             </div>
               <div className="w-full flex items-center justify-center pt-2">
               <Select
                 value={nodeValue}
-                onChange={handleNodeChange}
-                className="w-full"             
+                onChange={handleNodeChange} 
+                variant="filled" 
+                fullWidth          
               >
                   <MenuItem disabled value={"Select Node"}>Select Node</MenuItem>
                   {
@@ -269,37 +272,35 @@ const SwapForm = ({
               web3.currentProvider.selectedAddress) &&
             isWeb3Enabled &&
             walletConnected ? (
-              <Button
-                className="bg-btnBlue font-medium text-lg flex items-center rounded-full w-full"
+              <button
+              className="bg-btnBlue text-xs text-white font-medium px-4 py-2 w-full flex rounded items-center justify-center"
                 onClick={() => {
                   handleSwap();
                 }}
-                variant="contained"
-                color="secondary"
+                type="button" 
               >
                 Swap
-                <BsCurrencyExchange className="ml-2" size="32px" />
-              </Button>
+                <BsCurrencyExchange className="ml-2 text-white" size="32px" />
+              </button>
             ) : (
-              <Button
+              <button
                 onClick={() => {
                   setShowSelectWallet(true);
                 }}
-                variant="contained"
-                className="bg-btnBlue text-md font-bold w-full"
-                color="info"
-              >
-                Connect Wallet
+                className="bg-btnBlue text-xs text-white font-medium px-4 py-2 w-full flex rounded items-center justify-center"
+                type="button" 
+             >
                 <MdAccountBalanceWallet
-                  className="text-white ml-2"
+                  className="text-white mr-2"
                   size="32px"
                 />
-              </Button>
+                Connect Wallet
+              </button>
             )}
           </div>
         </form>
       </div>
-    </Paper>
+    </div>
   );
 };
 
