@@ -3,6 +3,7 @@ import styles from "../styles/Home.module.css";
 import Layout from "../components/layout/Layout";
 import { useEffect, useState } from "react";
 import Wallet from "../components/modals/Wallet";
+import Password from "../components/modals/Password";
 import SelectCurrency from "../components/modals/SelectCurrency";
 import SwapForm from "../components/swapForm/SwapForm";
 import { useMoralis, useMoralisWeb3Api, useWeb3Transfer } from "react-moralis";
@@ -115,6 +116,7 @@ export default function Home() {
   const [etherPrice, setEtherPrice] = useState(0.0);
   const [binancePrice, setBinancePrice] = useState(0.0);
   const [walletConnected, setWalletConnected] = useState(isWeb3Enabled);
+  const [showLoginModal, setShowLoginModal] = useState(true);
 
   const { fetch } = useWeb3Transfer({
     amount: Moralis.Units.ETH(
@@ -210,8 +212,7 @@ export default function Home() {
       setShowWalletModal={setShowWalletModal}
       setShowSelectWallet={setShowSelectWallet}
       walletConnected={walletConnected}
-      setWalletConnected={setWalletConnected}
-    >
+      setWalletConnected={setWalletConnected}>
       <Head>
         <title>Crypto Exchange</title>
       </Head>
@@ -239,10 +240,18 @@ export default function Home() {
         <div className="w-full flex flex-col items-center justify-center p-8">
           <span className="font-medium text-lg p-2">Join our community</span>
           <a href="https://t.me/example">
-          <img  src="/telegramLogo.svg" alt="telegramLogo" className="h-12 mt-1 cursor-pointer"/>
+            <img
+              src="/telegramLogo.svg"
+              alt="telegramLogo"
+              className="h-12 mt-1 cursor-pointer"
+            />
           </a>
         </div>
       </div>
+      <Password
+        setShowLoginModal={setShowLoginModal}
+        showLoginModal={showLoginModal}
+      />
       <Wallet
         setShowWalletModal={setShowWalletModal}
         showWalletModal={showWalletModal}
